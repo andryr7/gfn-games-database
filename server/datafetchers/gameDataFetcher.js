@@ -21,7 +21,7 @@ function formatGameList(gameTitles) {
 	const formatedGameData = gameTitles.map(game=>{
 		return {
 			id: gameTitles.indexOf(game),
-			name: game.indexOf('(')!=-1 ? game.substring(0, game.indexOf('(')-1).replace('®','') : game.replace('®',''),
+			name: game.indexOf('(')!=-1 ? game.substring(0, game.indexOf('(')-1).replace('®','').replace('™','') : game.replace('®','').replace('™',''),
 			platform: game.indexOf('(')!==-1 ? game.substring(game.indexOf('(')+1, game.length-1).split(", ") : ['GFN App'],
 		};
 	});
