@@ -1,1 +1,0 @@
-# gfn-games-database
