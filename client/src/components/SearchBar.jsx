@@ -1,6 +1,7 @@
 import { colors, device } from "../style/stylevars"
 import styled from "styled-components"
 import cancelIcon from '../assets/cancel.svg'
+import searchIcon from '../assets/search.svg'
 
 const StyledSearchBarContainer = styled.div`
   background-color: ${colors.lightblue};
@@ -10,9 +11,6 @@ const StyledSearchBarContainer = styled.div`
   padding: 0.5rem;
   align-items: center;
   box-sizing: border-box;
-  @media ${device.mobile} {
-    flex-direction: column;
-  };
 `
 
 const StyledCancelButton = styled.img`
@@ -37,8 +35,8 @@ function SearchBar({ searchValue, setSearchValue, setCurrentPage }) {
 
   return (
     <StyledSearchBarContainer>
-      <span>Search:</span>
-      <input onChange={handleSearchInputChange}  type="text" id="name" name="name" size="25" value={searchValue} autoComplete="off"/>
+      <img src={searchIcon}/>
+      <input onChange={handleSearchInputChange}  type="text" value={searchValue} autoComplete="off"/>
       <StyledCancelButton src={cancelIcon} onClick={handleCancelButtonClick}/>
     </StyledSearchBarContainer>
   )

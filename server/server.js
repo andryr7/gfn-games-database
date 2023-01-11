@@ -63,9 +63,6 @@ async function refreshData () {
 	reloadData();
 };
 
-// Server options
-app.listen(3000);
-
 // Serving the front-end app
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
@@ -94,3 +91,6 @@ app.get(`/${process.env.REFRESH_KEY}`, (req, res) => {
 app.get('*', function (request, response) {
 	response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
 });
+
+// Server options
+app.listen(3000);

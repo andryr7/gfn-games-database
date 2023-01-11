@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { colors } from '../style/stylevars'
+import { colors, device } from '../style/stylevars'
 
 const StyledSettingsContainer = styled.div`
   display: flex;
@@ -9,6 +9,11 @@ const StyledSettingsContainer = styled.div`
 `
 
 const StyledViewSelector = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media ${device.tablet} {
+    flex-direction: row;
+  };
 `
 
 const StyledViewButton = styled.div`
@@ -19,10 +24,18 @@ const StyledViewButton = styled.div`
   &:first-of-type {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    @media ${device.tablet} {
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 5px;
+    };
   }
   &:last-of-type {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    @media ${device.tablet} {
+      border-top-right-radius: 5px;
+      border-bottom-left-radius: 0;
+    };
   }
   &.selected {
     background-color: ${colors.green};
