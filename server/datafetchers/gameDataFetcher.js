@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
-require('dotenv').config();
 const axios = require("axios");
 const addDelay = require('../utils/addDelay');
+require('dotenv').config();
 
 // Function that scraps all game titles and corresponding platforms from GFN website
 async function fetchRawGameData() {

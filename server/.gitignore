@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # GFN Games database prefetched data
-tmp
+tmp/

@@ -1,6 +1,6 @@
 const jsonfile = require('jsonfile');
-require('dotenv').config();
 const axios = require("axios");
+require('dotenv').config();
 
 // Function that fetches data about a game from IGDB
 async function fetchGameModesData () {
