@@ -12,6 +12,11 @@ const refreshGameGenresData = require('./datafetchers/gameGenresDataFetcher');
 axios.defaults.headers.post['Client-ID'] = process.env.IGDB_CLIENT_ID;
 axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.IGDB_TEMPORARY_TOKEN}`;
 
+// Loading data in memory
+let gamedata = jsonfile.readFileSync('./tmp/gamedata.json');
+let genredata = jsonfile.readFileSync('./tmp/gamegenresdata.json');
+let gamemodesdata = jsonfile.readFileSync('./tmp/gamemodesdata.json');
+
 // Twitch API token function
 // function getTwitchAPIToken () {
 // 	axios.post(`https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_CLIENT_SECRET}&grant_type=client_credentials`)
@@ -23,10 +28,20 @@ axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.IGDB_TEMPOR
 // 		})
 // };
 
-// Loading data in memory
-let gamedata = jsonfile.readFileSync('./tmp/gamedata.json');
-let genredata = jsonfile.readFileSync('./tmp/gamegenresdata.json');
-let gamemodesdata = jsonfile.readFileSync('./tmp/gamemodesdata.json');
+// Programming the next data refresh on next thursday a 9 am (time of GFN games availability release)
+const now = new Date();
+const nextRefreshTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0, 0);
+const daysUntilThursday = (7 - now.getDay() + 4) % 7;
+nextRefreshTime.setDate(nextRefreshTime.getDate() + daysUntilThursday);
+if (nextRefreshTime < now) {
+	nextRefreshTime.setDate(nextRefreshTime.getDate() + 7);
+};
+const timeUntilNextRefresh = nextRefreshTime - now;
+const programRefresh = () => {
+	refreshData();
+	setInterval(refreshData, 7 * 24 * 60 * 60 * 1000);
+}
+setTimeout(programRefresh, timeUntilNextRefresh);
 
 // Reloading data in memory
 const reloadData = () => {
