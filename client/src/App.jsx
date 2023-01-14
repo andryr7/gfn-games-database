@@ -86,6 +86,9 @@ const StyledLink = styled.div`
   }
 `
 
+const StyledAppCredits = styled.span`
+`
+
 function App() {
   const [isLoading, setIsLoading]= useState(true);
   const [selectedSorting, setSelectedSorting] = useState(settings.defaultSortMethod);
@@ -183,10 +186,13 @@ function App() {
             <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} pageCount={pageCount} executeScroll={executeScroll}/>
           </>
         )}
-        <StyledLink as={Link} to={'/about'}>
-          about
-        </StyledLink>
+        <StyledAppCredits>
+          Game data provided by IGDB
+        </StyledAppCredits>
       </StyledAppContainer>
+      <StyledLink as={Link} to={'/about'}>
+        about
+      </StyledLink>
     </StyledApp>
   )
 }
