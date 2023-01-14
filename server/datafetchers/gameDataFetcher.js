@@ -38,7 +38,7 @@ async function getMoreData (game, gameindex, gamecount) {
 	`;
 
 	// Waiting to account for API limits
-	await addDelay(gameindex*300);
+	await addDelay(gameindex*1000);
 	console.log(`Fetching game ${gameindex} of ${gamecount}`);
 
 	// Fetching IGDB data
@@ -67,7 +67,7 @@ async function getCoverImageIds (game, gameindex, gameCount) {
 			where id = ${game.IGDBdata.cover};
 		`;
 
-		await addDelay(gameindex*300);
+		await addDelay(gameindex*1000);
 		console.log(`Fetching cover for game ${gameindex}`);
 
 		return axios.post(`https://api.igdb.com/v4/covers`, coverPostData)
