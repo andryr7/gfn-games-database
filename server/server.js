@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 // Automation functions
-const refreshData = require('./automation/dataRefresh');
+const { refreshData } = require('./automation/dataRefresh');
 const refreshIGDBToken = require('./automation/igdbTokenRefresh');
 const programDataRefresh = require('./automation/dataRefreshPlanner');
 const programNextTokenRefresh = require('./automation/igdbTokenRefreshPlanner');
@@ -45,3 +45,5 @@ app.get('*', function (request, response) {
 
 // Server options
 app.listen(3000);
+
+refreshData();

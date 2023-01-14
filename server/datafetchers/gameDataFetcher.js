@@ -10,17 +10,17 @@ async function fetchRawGameData() {
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 	await page.goto('https://www.nvidia.com/en-us/geforce-now/games/');
-	const gameTitles = await page.$$eval('.div-game-name', games => { return games.map(game => game.textContent)/*.slice(0, 20)*/});
+	const gameTitles = await page.$$eval('.div-game-name', games => { return games.map(game => game.textContent)/*.slice(0, 5)*/});
 	await browser.close();
 	return gameTitles;
 };
 
 // Function that formats raw game strings array into objects
-function formatGameList(gameTitles) {
+function formatGameList(gameData) {
 	console.log('Formating game data...');
-	const formatedGameData = gameTitles.map(game=>{
+	const formatedGameData = gameData.map(game=>{
 		return {
-			id: gameTitles.indexOf(game),
+			id: gameData.indexOf(game),
 			name: game.indexOf('(')!=-1 ? game.substring(0, game.indexOf('(')-1).replace('®','').replace('™','') : game.replace('®','').replace('™',''),
 			platform: game.indexOf('(')!==-1 ? game.substring(game.indexOf('(')+1, game.length-1).split(", ") : ['GFN App'],
 		};
@@ -38,8 +38,8 @@ async function getMoreData (game, gameindex, gamecount) {
 	`;
 
 	// Waiting to account for API limits
-	await addDelay(gameindex*1000);
-	console.log(`Fetching game ${gameindex} of ${gamecount}`);
+	await addDelay(gameindex*300);
+	console.log(`Fetching game ${gameindex+1} of ${gamecount}`);
 
 	// Fetching IGDB data
 	return axios.post('https://api.igdb.com/v4/games', postData)
@@ -60,15 +60,15 @@ async function getCoverImageIds (game, gameindex, gameCount) {
 	if (game.IGDBdata) {
 		if(!game.IGDBdata.cover) {
 			return game;
-		};
+		} else {
 		// Preparing the cover image request
 		const coverPostData = `
 			fields image_id;
 			where id = ${game.IGDBdata.cover};
 		`;
 
-		await addDelay(gameindex*1000);
-		console.log(`Fetching cover for game ${gameindex}`);
+		await addDelay(gameindex*300);
+		console.log(`Fetching cover for game ${gameindex+1}`);
 
 		return axios.post(`https://api.igdb.com/v4/covers`, coverPostData)
 			.then((res) =>{
@@ -79,7 +79,7 @@ async function getCoverImageIds (game, gameindex, gameCount) {
 			.catch((err) => {
 				console.log(err)
 			})
-
+		}
 	} else {
 		return game;
 	}
@@ -112,8 +112,11 @@ const saveToFile = (data) => {
 async function refreshGameData() {
 	const gameTitles = await fetchRawGameData();
 	const formatedGameData = await formatGameList(gameTitles);
+	console.log(formatedGameData);
 	const APIEnrichedGameData = await enrichGameData(formatedGameData);
 	saveToFile(APIEnrichedGameData);
 };
 
-module.exports = refreshGameData;
+module.exports = {
+	refreshGameData
+};

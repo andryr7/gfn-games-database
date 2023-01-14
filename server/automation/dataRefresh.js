@@ -1,4 +1,4 @@
-const refreshGameData = require('../datafetchers/gameDataFetcher');
+const { refreshGameData } = require('../datafetchers/gameDataFetcher');
 const refreshGameModesData = require('../datafetchers/gameModesDataFetcher');
 const refreshGameGenresData = require('../datafetchers/gameGenresDataFetcher');
 const jsonfile = require('jsonfile');
@@ -38,4 +38,6 @@ async function refreshData () {
 	reloadData();
 };
 
-module.exports = refreshData;
+module.exports = {
+	refreshData
+};
