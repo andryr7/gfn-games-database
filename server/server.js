@@ -1,24 +1,28 @@
 const express = require('express');
-const app = express();
-const axios = require("axios");
-const jsonfile = require('jsonfile');
+const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
 
-// Automation functions
-const { refreshData } = require('./automation/dataRefresh');
-const refreshIGDBToken = require('./automation/igdbTokenRefresh');
-const programDataRefresh = require('./automation/dataRefreshPlanner');
-const programNextTokenRefresh = require('./automation/igdbTokenRefreshPlanner');
+const app = express();
+const appData = require('./datamanagers/appDataManager');
 
-// Loading data in globally accessibles variables
-gamedata = jsonfile.readFileSync('./tmp/gamedata.json');
-genredata = jsonfile.readFileSync('./tmp/gamegenresdata.json');
-gamemodesdata = jsonfile.readFileSync('./tmp/gamemodesdata.json');
+// Automation functions
+const refreshData = require('./automation/refreshData');
+const refreshIGDBToken = require('./automation/refreshIGDBToken');
+const programDataRefresh = require('./automation/refreshDataPlanner');
+const programNextTokenRefresh = require('./automation/refreshIGDBTokenPlanner');
 
 // Setting axios config to request from IGDB API
 axios.defaults.headers.post['Client-ID'] = process.env.IGDB_CLIENT_ID;
-axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.IGDB_TEMPORARY_TOKEN}`;
+
+// Launching app automation
+(async function automateApp() {
+  await refreshIGDBToken();
+  await programNextTokenRefresh();
+  await refreshData();
+  await programDataRefresh();
+  console.log('Finished automatic app');
+}());
 
 // Serving the front-end app
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
@@ -27,23 +31,21 @@ app.use(express.static(path.resolve(__dirname, '../client/dist')));
 app.use(cors());
 
 app.get('/api/games', (req, res) => {
-	res.json(gamedata);
+  res.json(appData.getData('gamedata'));
 });
 
 app.get('/api/gamemodes', (req, res) => {
-	res.json(gamemodesdata);
+  res.json(appData.getData('gamemodedata'));
 });
 
 app.get('/api/genres', (req, res) => {
-	res.json(genredata);
+  res.json(appData.getData('genredata'));
 });
 
 // Redirecting all remaining possible requests to the front-end app
-app.get('*', function (request, response) {
-	response.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
 });
 
 // Server options
 app.listen(3000);
-
-refreshData();
