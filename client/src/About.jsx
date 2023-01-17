@@ -12,6 +12,7 @@ const StyledApp = styled.div`
   align-items: center;
   flex-direction: column;
   font-family: 'Trebuchet MS';
+  user-select: none;
 `
 
 const StyledAppContainer = styled.div`

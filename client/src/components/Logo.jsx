@@ -25,7 +25,6 @@ const StyledLogoSecondPart = styled.div`
 `
 
 function Logo() {
-
   return (
     <StyledLogoContainer>
       <StyledLogoFirstPart>GFN</StyledLogoFirstPart>

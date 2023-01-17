@@ -1,21 +1,21 @@
 import { useEffect, useState, useRef } from 'react'
 import './style/reset.css'
 import './style/globals.css'
+import { Link } from "react-router-dom"
 import { colors, device } from './style/stylevars'
 import styled from 'styled-components'
+import axios from 'axios'
+import { settings } from '../settings'
+import { filterGameDataByGenre, filterGameDataByMode } from './utils/filterGameData'
 import Logo from './components/Logo'
 import FilterBar from './components/FilterBar'
-import { settings } from '../settings'
-import axios from 'axios'
 import GameTable from './components/GameTable'
 import { sortGameData } from './utils/sortGameData'
-import { filterGameDataByGenre, filterGameDataByMode } from './utils/filterGameData'
 import Loader from './components/Loader'
 import Pagination from './components/Pagination'
 import GameCard from './components/GameCard'
 import AppSettings from './components/AppSettings'
 import SearchBar from './components/SearchBar'
-import { Link } from "react-router-dom"
 
 const StyledApp = styled.div`
   min-height: 100vh;
@@ -26,6 +26,7 @@ const StyledApp = styled.div`
   flex-direction: column;
   font-family: 'Trebuchet MS';
   padding: 2rem;
+  user-select: none;
 `
 
 const StyledAppContainer = styled.div`
