@@ -15,17 +15,25 @@ const programNextTokenRefresh = require('./automation/refreshIGDBTokenPlanner');
 // Setting axios config to request from IGDB API
 axios.defaults.headers.post['Client-ID'] = process.env.IGDB_CLIENT_ID;
 
-// Launching app automation
-(async function automateApp() {
+async function automateApp() {
   await refreshIGDBToken();
   await programNextTokenRefresh();
   await refreshData();
   await programDataRefresh();
-  console.log('Finished automatic app');
-}());
+  console.log('Finished automating app');
+}
 
-// Deploying the app in an non-autonomous way
-// appData.reloadData();
+// Enabling automation if necessary
+switch (process.env.AUTOMATE_APP) {
+  case 'true':
+    automateApp();
+    break;
+  case 'false':
+    appData.reloadData();
+    break;
+  default:
+    console.log('Error: automation env variable was not properly set');
+}
 
 // Serving the front-end app
 app.use(express.static(path.resolve(__dirname, '../client/dist')));

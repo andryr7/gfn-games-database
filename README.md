@@ -7,7 +7,7 @@ To deploy you will need IGDB credentials as ENV variables.
 
 The back-end of the app is built on Express and the front-end is built on Vite and React, using Axios, Styled Components and React Router.
 
-## Deploying in a test environment
+## Setting a test/local environment
 
 1. Initialize client
 
@@ -17,7 +17,7 @@ The back-end of the app is built on Express and the front-end is built on Vite a
    yarn
    ```
    
-.Build a static version of the client that will be served by the node server:
+.Build a static version of the client that will be served by the node/express server:
 
   ```bash
   yarn build
@@ -36,9 +36,10 @@ The back-end of the app is built on Express and the front-end is built on Vite a
   ```bash
   IGDB_CLIENT_ID=
   IGDB_CLIENT_SECRET=
+  AUTOMATE_APP=true
   ```
 
-.Launch the dev server:
+.Launch a dev server/Serve the server.js file:
 
   ```bash
   yarn devStart
@@ -46,6 +47,6 @@ The back-end of the app is built on Express and the front-end is built on Vite a
 
 ## Deploying in production
 
-- Follow the same steps as for the test environment but make sure your .env file is protected, or use another method to insert env values.
-- Please keep in mind that this app cannot be deployed on certain shared hosting solutions as it requires certain programs to be installed (ex: chromium). You can still deploy on solutions like cpanel but it the app won't be able to fetch new games in an automatic way.
-- To do so, you will first need to run it in a test environment, to gather data in the generated json file in the tmp folder. Once it's done, you will need to comment the automation function and uncomment the simpler loading function. Finally, deploy the app while making sure the 'tmp' folder is still present.
+- Follow the same steps as for the test setup but make sure your .env file is protected, or use another method to insert env values.
+- Please keep in mind that this app cannot be deployed on certain shared hosting solutions as it requires certain programs to be installed (ex: chromium). You can still deploy on solutions like cpanel and its node app utility but the app won't be able to fetch new games in an automatic way.
+- To do so, you will first need to run it in a test environment, to gather data in the generated json files in the tmp folder. You also have to change the value of AUTOMATE_APP to 'false' in your .env file or in your env variables manager.
