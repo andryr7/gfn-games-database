@@ -46,6 +46,6 @@ The back-end of the app is built on Express and the front-end is built on Vite a
 
 ## Deploying in production
 
-.Follow the same steps as for the test environment but make sure your .env file is protected, or use another method to insert env values.
-.Please keep in mind that this app cannot be deployed on certain shared hosting solutions as it requires certain programs to be installed (ex: chromium). You can still deploy on solutions like cpanel but it the app won't be able to fetch new games in an automatic way.
-.To do so, you will first need to run it in a test environment, to gather data in the generated json file in the tmp folder. Once it's done, you will need to comment the automation function and uncomment the simpler loading function. Finally, deploy the app while making sure the 'tmp' folder is still present.
+- Follow the same steps as for the test environment but make sure your .env file is protected, or use another method to insert env values.
+- Please keep in mind that this app cannot be deployed on certain shared hosting solutions as it requires certain programs to be installed (ex: chromium). You can still deploy on solutions like cpanel but it the app won't be able to fetch new games in an automatic way.
+- To do so, you will first need to run it in a test environment, to gather data in the generated json file in the tmp folder. Once it's done, you will need to comment the automation function and uncomment the simpler loading function. Finally, deploy the app while making sure the 'tmp' folder is still present.
