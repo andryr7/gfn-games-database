@@ -24,6 +24,9 @@ axios.defaults.headers.post['Client-ID'] = process.env.IGDB_CLIENT_ID;
   console.log('Finished automatic app');
 }());
 
+// Deploying the app in an non-autonomous way
+// appData.reloadData();
+
 // Serving the front-end app
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
