@@ -5,7 +5,7 @@ const addDelay = require('../utils/addDelay');
 require('dotenv').config();
 
 // Function that scraps all game titles and corresponding platforms from GFN website
-async function fetchRawGameData() {
+async function fetchGameTitles() {
   console.log('Fetching raw game titles...');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -16,11 +16,11 @@ async function fetchRawGameData() {
 }
 
 // Function that formats raw game strings array into objects
-function formatGameList(gameData) {
+function formatGameList(gameTitles) {
   console.log('Formating game data...');
-  const formatedGameData = gameData.map((game) => ({
-    id: gameData.indexOf(game),
-    name: game.indexOf('(') != -1 ? game.substring(0, game.indexOf('(') - 1).replace('®', '').replace('™', '') : game.replace('®', '').replace('™', ''),
+  const formatedGameData = gameTitles.map((game) => ({
+    id: gameTitles.indexOf(game),
+    name: game.indexOf('(') !== -1 ? game.substring(0, game.indexOf('(') - 1).replace('®', '').replace('™', '') : game.replace('®', '').replace('™', ''),
     platform: game.indexOf('(') !== -1 ? game.substring(game.indexOf('(') + 1, game.length - 1).split(', ') : ['GFN App'],
   }));
   return formatedGameData;
@@ -28,63 +28,60 @@ function formatGameList(gameData) {
 
 // Function that fetches data about a game from IGDB
 async function getMoreData(game, gameindex, gamecount) {
-  // Preparing the request
+  // Creating the request
   const postData = `
-		fields id, name, rating, aggregated_rating, game_modes, genres, cover, slug;
-		search "${game.name}";
-		limit 1;
-	`;
+    fields id, name, rating, aggregated_rating, game_modes, genres, cover, slug, first_release_date;
+    search "${game.name}";
+    limit 1;
+  `;
 
-  // Waiting to account for API limits
+  // Waiting in order to account for API limits
   await addDelay(gameindex * 300);
   console.log(`Fetching game ${gameindex + 1} of ${gamecount}`);
 
   // Fetching IGDB data
   return axios.post('https://api.igdb.com/v4/games', postData)
     .then((res) => {
-      const gamedata = {
+      const gameData = {
         ...game,
         IGDBdata: res.data[0],
       };
-      return gamedata;
+      return gameData;
     })
     .catch((err) => {
-      console.log('AXIOS ERROR: ', err);
+      console.error('AXIOS ERROR: ', err);
     });
 }
 
 // Function that fetches cover URLs
 async function getCoverImageIds(game, gameindex, gameCount) {
-  if (game.IGDBdata) {
-    if (!game.IGDBdata.cover) {
-      return game;
-    }
-    // Preparing the cover image request
-    const coverPostData = `fields image_id; where id = ${game.IGDBdata.cover};`;
+  if (!game.IGDBdata) return game;
+  if (!game.IGDBdata.cover) return game;
 
-    await addDelay(gameindex * 300);
-    console.log(`Fetching cover for game ${gameindex + 1} of ${gameCount}`);
+  // Preparing the cover image request
+  const coverPostData = `fields image_id; where id = ${game.IGDBdata.cover};`;
+  await addDelay(gameindex * 300);
+  console.log(`Fetching cover for game ${gameindex + 1} of ${gameCount}`);
 
-    return axios.post('https://api.igdb.com/v4/covers', coverPostData)
-      .then((res) => {
-        // Adding the URL to the game object
-        game.IGDBdata.cover_image_id = res.data[0].image_id;
-        return game;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  try {
+    const res = await axios.post('https://api.igdb.com/v4/covers', coverPostData);
+    // Creating a copy of the game object
+    const updatedGame = { ...game };
+    // Adding the URL to the copied game object
+    updatedGame.IGDBdata.cover_image_id = res.data[0].image_id;
+    return updatedGame;
+  } catch (err) {
+    console.error(err);
+    return game;
   }
-  return game;
 }
 
 // Function that organizes the fetching of data for all fetched games
 async function enrichGameData(gameData) {
   console.log('Fetching IGDB data...');
   const igdbEnrichedGameData = await Promise.all(
-    gameData.map((game, i) => getMoreData(game, i, gameData.length))
+    gameData.map((game, i) => getMoreData(game, i, gameData.length)),
   );
-  // return igdbEnrichedGameData;
   return Promise.all(
     igdbEnrichedGameData.map((game, i) => getCoverImageIds(game, i, igdbEnrichedGameData.length)),
   );
@@ -97,15 +94,15 @@ async function saveToFile(data) {
     .then(() => {
       console.log('Finished saving formatted game data');
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      console.error(err);
     });
-};
+}
 
 async function refreshGameData() {
-  const gameTitles = await fetchRawGameData();
-  const formatedGameData = await formatGameList(gameTitles);
-  const APIEnrichedGameData = await enrichGameData(formatedGameData);
+  const gameTitles = await fetchGameTitles();
+  const formatedGameList = await formatGameList(gameTitles);
+  const APIEnrichedGameData = await enrichGameData(formatedGameList);
   saveToFile(APIEnrichedGameData);
 }
 

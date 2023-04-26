@@ -5,13 +5,13 @@ require('dotenv').config();
 // Function that fetches data about a game from IGDB
 async function fetchGameModesData() {
   const postData = `
-		fields *; limit 100;
-	`;
+    fields *; limit 100;
+  `;
 
   return axios.post('https://api.igdb.com/v4/game_modes', postData)
     .then((res) => res.data)
     .catch((err) => {
-      console.log('AXIOS ERROR: ', err);
+      console.error('AXIOS ERROR: ', err);
     });
 }
 
@@ -19,11 +19,11 @@ async function fetchGameModesData() {
 async function saveToFile(data) {
   const file = './tmp/gamemodesdata.json';
   await jsonfile.writeFile(file, data)
-    .then((res) => {
+    .then(() => {
       console.log('Finished saving game modes data');
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      console.error(err);
     });
 }
 

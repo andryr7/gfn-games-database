@@ -5,8 +5,8 @@ require('dotenv').config();
 // Function that fetches data about a game from IGDB
 async function fetchGameGenresData() {
   const postData = `
-		fields *; limit 100;
-	`;
+    fields *; limit 100;
+  `;
 
   return axios.post('https://api.igdb.com/v4/genres', postData)
     .then((res) => res.data)
@@ -19,11 +19,11 @@ async function fetchGameGenresData() {
 async function saveToFile(data) {
   const file = './tmp/gamegenresdata.json';
   await jsonfile.writeFile(file, data)
-    .then((res) => {
+    .then(() => {
       console.log('Finished saving game genres data');
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      console.error(err);
     });
 }
 

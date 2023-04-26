@@ -18,7 +18,7 @@ async function reloadData() {
       console.log('Reloaded game data');
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   jsonfile.readFile('./tmp/gamemodesdata.json')
     .then((obj) => {
@@ -26,7 +26,7 @@ async function reloadData() {
       console.log('Reloaded gamemodes data');
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   jsonfile.readFile('./tmp/gamegenresdata.json')
     .then((obj) => {
@@ -34,8 +34,8 @@ async function reloadData() {
       console.log('Reloaded gamegenres data');
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
-};
+}
 
 module.exports = { setData, getData, reloadData };
