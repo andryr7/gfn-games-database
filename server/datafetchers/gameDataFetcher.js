@@ -5,7 +5,7 @@ const addDelay = require('../utils/addDelay');
 require('dotenv').config();
 
 // Function that scraps all game titles and corresponding platforms from GFN website
-async function fetchGameTitles() {
+async function getGameTitles() {
   console.log('Fetching raw game titles...');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -44,7 +44,7 @@ async function getMoreData(game, gameindex, gamecount) {
     .then((res) => {
       const gameData = {
         ...game,
-        IGDBdata: res.data[0],
+        IGDBdata: res.data[0] || 'no-data',
       };
       return gameData;
     })
@@ -55,8 +55,7 @@ async function getMoreData(game, gameindex, gamecount) {
 
 // Function that fetches cover URLs
 async function getCoverImageIds(game, gameindex, gameCount) {
-  if (!game.IGDBdata) return game;
-  if (!game.IGDBdata.cover) return game;
+  if (game.IGDBdata === 'no-data' || !game.IGDBdata.cover) return game;
 
   // Preparing the cover image request
   const coverPostData = `fields image_id; where id = ${game.IGDBdata.cover};`;
@@ -100,7 +99,7 @@ async function saveToFile(data) {
 }
 
 async function refreshGameData() {
-  const gameTitles = await fetchGameTitles();
+  const gameTitles = await getGameTitles();
   const formatedGameList = await formatGameList(gameTitles);
   const APIEnrichedGameData = await enrichGameData(formatedGameList);
   saveToFile(APIEnrichedGameData);
