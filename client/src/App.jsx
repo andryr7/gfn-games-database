@@ -1,10 +1,13 @@
 import { useContext } from 'react'
 import { AppContext } from './utils/context'
 import styled from 'styled-components'
+import { colors, device } from './styles/stylevars'
+
+// Components imports
 import SideBar from './components/SideBar'
 import GridGameList from './components/GridGameList'
 import TableGameList from './components/TableGameList'
-import { colors, device } from './styles/stylevars'
+import Loading from './components/Loading'
 
 const StyledAppContainer = styled.div`
   display: flex;
@@ -30,7 +33,7 @@ export default function App() {
 
   return (
     <StyledAppContainer>
-      {isLoading && (<h1>loading</h1>)}
+      {isLoading && (<Loading />)}
       {!isLoading && (
         <>
           <SideBar />
