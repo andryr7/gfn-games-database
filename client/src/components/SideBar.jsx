@@ -10,6 +10,7 @@ import GameCount from "./SideBar/GameCount"
 import About from "./SideBar/About"
 import { useContext } from "react"
 import { AppContext } from "../utils/context"
+import FilterReseter from "./SideBar/FilterReseter"
 
 const StyledSideBarContainer = styled.div`
   position: fixed;
@@ -46,6 +47,7 @@ export default function SideBar() {
         <SortBlock />
         <GenreFilterBlock />
         <GamemodeFilterBlock />
+        <FilterReseter />
         <GameCount />
         <About />
       </>

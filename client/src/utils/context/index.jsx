@@ -38,7 +38,10 @@ export const AppProvider = ({ children }) => {
         const [gameData, genreData, modeData] = await Promise.all([
           axios.get('/api/games'),
           axios.get('/api/genres'),
-          axios.get('/api/gamemodes')
+          axios.get('/api/gamemodes'),
+          // axios.get('http://localhost:3000/api/games'),
+          // axios.get('http://localhost:3000/api/genres'),
+          // axios.get('http://localhost:3000/api/gamemodes')
         ]);
         setGameData(gameData.data);
         setGenreData(genreData.data);
