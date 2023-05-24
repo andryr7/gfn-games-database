@@ -5,11 +5,12 @@ body {
   /* background by SVGBackgrounds.com */
   background-attachment: fixed;
   font-family: 'DM Sans', sans-serif;
-  scroll-behavior: smooth;
 }
 
 * {
   transition: all 0.25s;
+  scroll-behavior: smooth;
+  scrollbar-color: #3F3F3F #191919;
 }
 
 a {

@@ -10,6 +10,7 @@ const StyledGameCount = styled.button`
   border-radius: 5px;
   color: white;
   padding: 0.5rem;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   &:hover {
     background-color: ${colors.grey};

@@ -57,19 +57,22 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   // Listening for screen size changes to call menu closing function
-  // useEffect(()=>{
-  //   window.addEventListener('resize', handleWindowResize);
-  //   return () => {
-  //     window.removeEventListener('resize', handleWindowResize);
-  //   };
-  // });
+  useEffect(()=>{
+    window.addEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  },[]);
 
   // Menu closing function
-  // const handleWindowResize = (e) => {
-  //   if (e.currentTarget.innerWidth < 1280) {
-  //     setMenuIsOpened(true);
-  //   }
-  // };
+  const handleWindowResize = (e) => {
+    if (e.currentTarget.innerWidth > 1280) {
+      setMenuIsOpened(true);
+    }
+    else {
+      setMenuIsOpened(false);
+    }
+  };
 
   // Updating the UI when the sorting or filtering options change
   useEffect(() => {
