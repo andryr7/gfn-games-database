@@ -4,8 +4,7 @@ import { useContext } from 'react'
 import { AppContext } from '../utils/context'
 
 import { getGameGamemodes, getGameGenres } from '../utils/data'
-import { getGamersRatingColor } from '../utils/display'
-import { getCriticsRatingColor } from '../utils/display'
+import { getRatingColor } from '../utils/display'
 
 const StyledTagContainer = styled.div`
   display: flex;
@@ -113,8 +112,8 @@ export default function GridItem ({ game }) {
   const { genreData, gamemodeData } = useContext(AppContext);
   const gameGenres = getGameGenres(game, genreData);
   const gameGamemodes = getGameGamemodes(game, gamemodeData);
-  const gamersRatingColor = getGamersRatingColor(game);
-  const criticsRatingColor = getCriticsRatingColor(game);
+  const gamersRatingColor = getRatingColor(game.IGDBdata.rating);
+  const criticsRatingColor = getRatingColor(game.IGDBdata.aggregated_rating);
   const gameUrl = game.IGDBdata.slug ? `https://www.igdb.com/games/${game.IGDBdata.slug}` : null;
 
   return (

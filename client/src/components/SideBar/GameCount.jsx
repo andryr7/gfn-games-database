@@ -9,12 +9,15 @@ const StyledGameCount = styled.span`
 `
 
 export default function GameCount() {
-  const { refinedData } = useContext(AppContext);
-  const gameCount = refinedData.length;
+  const { gameData, refinedData } = useContext(AppContext);
+  const gameCount = gameData.length;
+  const filteredGameCount = refinedData.length;
 
   return(
-    <StyledGameCount>
-      {`${gameCount} games found`}
-    </StyledGameCount>
+    <>
+      <StyledGameCount>
+        {`Showing ${filteredGameCount} of ${gameCount} games`}
+      </StyledGameCount>
+    </>
   )
 }

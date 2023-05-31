@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { colors, device } from '../styles/stylevars'
-import { getGamersRatingColor } from '../utils/display'
-import { getCriticsRatingColor } from '../utils/display'
+import { getRatingColor } from '../utils/display'
 import { getGameGamemodes, getGameGenres } from '../utils/data'
 import { useContext } from 'react'
 import { AppContext } from '../utils/context'
@@ -137,10 +136,9 @@ export default function ListItem({ game }) {
   const { genreData, gamemodeData } = useContext(AppContext);
   const gameGenres = getGameGenres(game, genreData);
   const gameGamemodes = getGameGamemodes(game, gamemodeData);
-  const gamersRatingColor = getGamersRatingColor(game);
-  const criticsRatingColor = getCriticsRatingColor(game);
+  const gamersRatingColor = getRatingColor(game.IGDBdata.rating);
+  const criticsRatingColor = getRatingColor(game.IGDBdata.aggregated_rating);
   const gameUrl = game.IGDBdata.slug ? `https://www.igdb.com/games/${game.IGDBdata.slug}` : null;
-
   const gamersRating = Math.round(game.IGDBdata.rating) || 0;
   const criticsRating = Math.round(game.IGDBdata.aggregated_rating) || 0;
 

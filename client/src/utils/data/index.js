@@ -7,13 +7,22 @@ export function getRefinedData(
   selectedGamemodes
   ) {
 
+  // Filtering games according to the seach input
   const searchFilteredData = gameData.filter(game=>{
     return game.name.toLowerCase().replace(/\s/g, '').includes(searchInput.toLowerCase().replace(/\s/g, ''))
   });
+
+  // Applying sorting to the data
   const sortedData = getSortedData(searchFilteredData, sortMode);
+
+  // Reversing the order of elements if necessary
   const sortedDirectedData = sortDirection === 'asc' ? sortedData : sortedData.slice().reverse();
+
+  //  Filtering the data
   const genreFilteredData = getGenreFilteredData(sortedDirectedData, selectedGenres);
   const gamemodeFilteredData = getGamemodeFilteredData(genreFilteredData, selectedGamemodes)
+
+  // Returning the processed data
   return gamemodeFilteredData
 }
 
@@ -24,69 +33,67 @@ function getSortedData(data, dataSortMode) {
         if (a.name < b.name) {
           return -1;
         }
-        else {
+        else if (a.name > b.name){
             return 1;
         }
+        return 0;
       });
     case 'gamersRating':
-      return data.sort((a,b)=>{
-        // items cannot be compared
-        if (a.IGDBdata === 'no-data' || !a.IGDBdata.rating) {
-          return 1;
-        }
-        if (!b.IGDBdata === 'no-data' || !b.IGDBdata.rating) {
-          return -1;
-        }
+      // Filtering out games with no data, then applying the sorting method
+      return data.filter(game => game.IGDBdata.rating).sort((a,b)=>{
         if (a.IGDBdata.rating > b.IGDBdata.rating) {
           return -1;
-        }
-        if (a.IGDBdata.rating < b.IGDBdata.rating) {
+        } else if (a.IGDBdata.rating < b.IGDBdata.rating) {
           return 1;
         }
+        return 0;
       });
     case 'criticsRating':
-      return data.sort((a,b)=>{
-        // items cannot be compared
-        if (!a.IGDBdata === 'no-data' || !a.IGDBdata.aggregated_rating) {
-          return 1;
-        }
-        if (!b.IGDBdata === 'no-data' || !b.IGDBdata.aggregated_rating) {
-          return -1;
-        }
+      // Filtering out games with no data, then applying the sorting method
+      return data.filter(game => game.IGDBdata.aggregated_rating).sort((a,b)=>{
         if (a.IGDBdata.aggregated_rating > b.IGDBdata.aggregated_rating) {
           return -1;
-        }
-        if (a.IGDBdata.aggregated_rating < b.IGDBdata.aggregated_rating) {
+        } else if (a.IGDBdata.aggregated_rating < b.IGDBdata.aggregated_rating) {
           return 1;
         }
+        return 0;
       });
   }
 }
 
 function getGenreFilteredData(data, dataGenreFilter) {
-  if(dataGenreFilter.includes(0)) {
-    return data
+  // If the filter is 0, meaning all genres are displayed, return all games
+  if (dataGenreFilter.includes(0)) {
+    return data;
   }
-  const noIGDBDataFilteredData = data.filter(game => game.IGDBdata !== 'no-data');
-  const noGenresFilteredData = noIGDBDataFilteredData.filter(game => game.IGDBdata.genres);
-  const genreFilteredData = noGenresFilteredData.filter(game => {
-    return game.IGDBdata.genres.some(gameGenre => dataGenreFilter.includes(gameGenre));
+
+  // Else, filter out games without data and unwanted genres
+  return data.filter(game => {
+    return (
+      game.IGDBdata !== 'no-data' &&
+      game.IGDBdata.genres &&
+      game.IGDBdata.genres.some(gameGenre => dataGenreFilter.includes(gameGenre))
+    );
   });
-  return genreFilteredData;
 }
 
 function getGamemodeFilteredData(data, dataGamemodeFilter) {
-  if(dataGamemodeFilter.includes(0)) {
-    return data
+  // If the filter is 0, meaning all gamemodes are displayed, return all games
+  if (dataGamemodeFilter.includes(0)) {
+    return data;
   }
-  const noIGDBDataFilteredData = data.filter(game => game.IGDBdata !== 'no-data');
-  const noGamemodesFilteredData = noIGDBDataFilteredData.filter(game => game.IGDBdata.game_modes);
-  const genreFilteredData = noGamemodesFilteredData.filter(game => {
-    return game.IGDBdata.game_modes.some(gameGenre => dataGamemodeFilter.includes(gameGenre));
+
+  // Else, filter out games without data and unwanted gamemodes
+  return data.filter(game => {
+    return (
+      game.IGDBdata !== 'no-data' &&
+      game.IGDBdata.game_modes &&
+      game.IGDBdata.game_modes.some(gameMode => dataGamemodeFilter.includes(gameMode))
+    );
   });
-  return genreFilteredData;
 }
 
+// Function that returns an array containing the names of the genres of a game
 export function getGameGenres(game, genres) {
   if(game.IGDBdata.genres === undefined) {
     return []
@@ -96,6 +103,7 @@ export function getGameGenres(game, genres) {
   })
 }
 
+// Function that returns an array containing the names of the gamemodes of a game
 export function getGameGamemodes(game, gamemodes) {
   if(game.IGDBdata.game_modes === undefined) {
     return []

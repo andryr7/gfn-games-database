@@ -18,14 +18,15 @@ export const AppProvider = ({ children }) => {
   const [selectedGamemodes, setSelectedGamemodes] = useState([0]);
   const [displayedGamesCount, setDisplayedGamesCount] = useState(20);
   const [menuIsOpened, setMenuIsOpened] = useState(true);
-  const refinedData = getRefinedData(
+  const refinedData = !isLoading ? getRefinedData(
     gameData,
     searchInput,
     sortMode,
     sortDirection,
     selectedGenres,
     selectedGamemodes
-  );
+  ) :
+  gameData;
 
   useEffect(() => {
     async function fetchData() {
