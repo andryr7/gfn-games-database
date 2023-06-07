@@ -26,6 +26,7 @@ const StyledSideBarContainer = styled.div`
   padding: 0.5rem;
   box-sizing: border-box;
   background-color: ${colors.black};
+  overflow-y: scroll;
   @media ${device.tablet} {
     max-width: 100%;
     width: 100%;

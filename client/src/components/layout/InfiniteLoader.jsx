@@ -15,7 +15,7 @@ const StyledInfiniteLoader = styled.span`
 `
 
 export default function InfiniteLoader() {
-  const [LoaderRef, LoaderIsInView] = useInView();
+  const [LoaderRef, LoaderIsInView] = useInView(0, '100%');
   const { setDisplayedGamesCount } = useContext(AppContext);
 
   useEffect(() => {
