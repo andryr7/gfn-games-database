@@ -3,17 +3,13 @@ import GridItem from './GridItem'
 import InfiniteLoader from './layout/InfiniteLoader'
 import { useContext } from 'react'
 import { AppContext } from '../utils/context'
-import { device } from '../styles/stylevars'
 
 const StyledGridGameListContainer = styled.section`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(264px, 1fr) );
+  justify-items: center;
+  padding: 25px;
   gap: 25px;
-  padding: 50px;
-  justify-content: center;
-  @media ${device.mobile} {
-    padding: 25px;
-  }
 `
 
 export default function GridGameList() {

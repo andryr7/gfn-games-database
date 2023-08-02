@@ -38,8 +38,6 @@ const StyledGamemodeBlockContent = styled.div`
   border-color: ${colors.grey};
   display: flex;
   flex-direction: column;
-  //TODO MAX WIDTHHHHHHHHHHHHHHHHHHH
-  max-width: 400px;
   box-sizing: border-box;
   gap: 1rem;
   opacity: 0;

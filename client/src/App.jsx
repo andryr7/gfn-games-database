@@ -14,18 +14,13 @@ const StyledAppContainer = styled.div`
   color: ${colors.white};
   width: 100%;
   height: 100%;
+  @media ${device.tablet} {
+    flex-direction: column;
+  };
 `
 
 const StyledMain = styled.main`
   width: 100%;
-  margin-left: 350px;
-  @media ${device.tablet} {
-    margin-left: 0px;
-    margin-top: 150px;
-  };
-  @media ${device.mobile} {
-    margin-top: 85px;
-  };
 `
 
 export default function App() {
@@ -38,8 +33,8 @@ export default function App() {
         <>
           <SideBar />
           <StyledMain>
-          {displayMode === 'grid' && <GridGameList />}
-          {displayMode === 'table' && <TableGameList />}
+            {displayMode === 'grid' && <GridGameList />}
+            {displayMode === 'table' && <TableGameList />}
           </StyledMain>
         </>
       )}

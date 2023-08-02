@@ -13,11 +13,11 @@ import { AppContext } from "../utils/context"
 import FilterReseter from "./SideBar/FilterReseter"
 
 const StyledSideBarContainer = styled.div`
-  position: fixed;
+  position: sticky;
   top: 0;
-  max-width: 350px;
-  height: 100%;
-  z-index: 2;
+  max-width: min(25vw, 500px);
+  height: 100vh;
+  z-index: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
