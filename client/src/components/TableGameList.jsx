@@ -11,7 +11,7 @@ const StyledGridGameListContainer = styled.section`
   gap: 10px;
   padding: 10px;
   @media ${device.tablet} {
-    margin-top: 20px;
+    margin-top: 100px;
   };
 `
 

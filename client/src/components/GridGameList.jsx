@@ -3,6 +3,7 @@ import GridItem from './GridItem'
 import InfiniteLoader from './layout/InfiniteLoader'
 import { useContext } from 'react'
 import { AppContext } from '../utils/context'
+import { device } from '../styles/stylevars'
 
 const StyledGridGameListContainer = styled.section`
   display: grid;
@@ -10,6 +11,9 @@ const StyledGridGameListContainer = styled.section`
   justify-items: center;
   padding: 25px;
   gap: 25px;
+  @media ${device.tablet} {
+    margin-top: 100px;
+  };
 `
 
 export default function GridGameList() {

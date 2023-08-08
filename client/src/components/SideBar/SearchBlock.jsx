@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { colors } from "../../styles/stylevars"
 import SideBarSection from "./../layout/SideBarSection"
 import SearchIcon from '../buttons/SearchIcon'
+import EraseIcon from "../buttons/EraseIcon"
 import { useContext } from "react"
 import { AppContext } from "../../utils/context"
 
@@ -13,6 +14,9 @@ const StyledSearchBlock = styled.div`
 const StyledIconWrapper = styled.div`
   width: 36px;
   height: 36px;
+  &.erase {
+    cursor: pointer;
+  };
 `
 
 const StyledInput = styled.input`
@@ -37,6 +41,10 @@ export default function SearchBlock() {
     setSearchInput(e.target.value);
   };
 
+  const handleEraseClick = () => {
+    setSearchInput('');
+  }
+
   return (
     <SideBarSection>
       <StyledSearchBlock>
@@ -44,6 +52,9 @@ export default function SearchBlock() {
           <SearchIcon />
         </StyledIconWrapper>
         <StyledInput type="text" placeholder="search" value={searchInput} autoFocus onChange={handleInputChange}/>
+        <StyledIconWrapper onClick={handleEraseClick} className="erase">
+          <EraseIcon />
+        </StyledIconWrapper>
       </StyledSearchBlock>
     </SideBarSection>
   )

@@ -1,7 +1,5 @@
 import styled from "styled-components"
 import { colors, device } from "../../styles/stylevars"
-import { useContext } from "react"
-import { AppContext } from "../../utils/context"
 import MenuIcon from '../buttons/MenuIcon'
 
 const StyledLogoBlock = styled.div`
@@ -18,14 +16,14 @@ const StyledTitleFirstPart = styled.h2`
   font-size: 110px;
   font-weight: 700;
   color: ${colors.green};
-  @media ${device.mobile} {
+  @media ${device.tablet} {
     font-size: 50px;
   };
 `
 
 const StyledTitleSecondPart = styled.h1`
   font-size: 50px;
-  @media ${device.mobile} {
+  @media ${device.tablet} {
     font-size: 22px;
   };
 `
@@ -62,16 +60,11 @@ const SideBarSection = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    height: 150px;
-  };
-  @media ${device.mobile} {
     height: 85px;
   };
 `
 
-export default function LogoBlock() {
-  const { menuIsOpened, setMenuIsOpened } = useContext(AppContext);
-
+export default function LogoBlock({ menuIsOpened, setMenuIsOpened }) {
   return (
     <SideBarSection>
       <StyledLogoBlock>

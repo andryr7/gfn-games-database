@@ -88,6 +88,10 @@ const StyledRatingContainer = styled.div`
   padding-bottom: 0.5rem;
 `
 
+const StyledRatingLabel = styled.span`
+  color: ${colors.grey};
+`
+
 const StyledRating = styled.span`
   margin-top: 0.5rem;
   border-radius: 25px;
@@ -148,7 +152,7 @@ export default function GridItem ({ game }) {
       <StyledRatingContainer>
         {game.IGDBdata.rating && (
           <StyledRatingAligner>
-            <span>gamers:</span>
+            <StyledRatingLabel>gamers</StyledRatingLabel>
             <StyledRating ratingcolor={gamersRatingColor}>
               {Math.round(game.IGDBdata.rating)}
             </StyledRating>
@@ -156,7 +160,7 @@ export default function GridItem ({ game }) {
         )}
         {game.IGDBdata.aggregated_rating && (
           <StyledRatingAligner>
-            <span>critics:</span>
+            <StyledRatingLabel>critics</StyledRatingLabel>
             <StyledRating ratingcolor={criticsRatingColor}>
               {Math.round(game.IGDBdata.aggregated_rating)}
             </StyledRating>

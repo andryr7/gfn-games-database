@@ -4,10 +4,12 @@ import styled from 'styled-components'
 import { colors, device } from './styles/stylevars'
 
 // Components imports
-import SideBar from './components/SideBar'
+import MobileSideBar from './components/MobileSideBar'
+import DesktopSideBar from './components/DesktopSideBar'
 import GridGameList from './components/GridGameList'
 import TableGameList from './components/TableGameList'
 import Loading from './components/Loading'
+import { useMediaQuery } from './utils/hooks/useMediaQuery'
 
 const StyledAppContainer = styled.div`
   display: flex;
@@ -25,13 +27,16 @@ const StyledMain = styled.main`
 
 export default function App() {
   const { isLoading, displayMode } = useContext(AppContext);
+  const isMobile = useMediaQuery(`(max-width: 1280px)`);
+  console.log(isMobile)
 
   return (
     <StyledAppContainer>
       {isLoading && (<Loading />)}
       {!isLoading && (
         <>
-          <SideBar />
+          {isMobile && <MobileSideBar />}
+          {!isMobile && <DesktopSideBar />}
           <StyledMain>
             {displayMode === 'grid' && <GridGameList />}
             {displayMode === 'table' && <TableGameList />}

@@ -67,14 +67,9 @@ const StyledGameImage = styled.img`
 
 const StyledGameInfoContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
   gap: 1rem;
-  @media ${device.desktop} {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  };
 `
 
 const StyledGameName = styled.h3`

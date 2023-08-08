@@ -17,7 +17,6 @@ export const AppProvider = ({ children }) => {
   const [selectedGenres, setSelectedGenres] = useState([0]);
   const [selectedGamemodes, setSelectedGamemodes] = useState([0]);
   const [displayedGamesCount, setDisplayedGamesCount] = useState(20);
-  const [menuIsOpened, setMenuIsOpened] = useState(true);
   const refinedData = !isLoading ? getRefinedData(
     gameData,
     searchInput,
@@ -31,7 +30,6 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     async function fetchData() {
       if(window.innerWidth <= 1280) {
-        setMenuIsOpened(false);
         setDisplayMode('table');
       }
 
@@ -84,9 +82,7 @@ export const AppProvider = ({ children }) => {
       setSelectedGamemodes,
       displayedGamesCount,
       setDisplayedGamesCount,
-      refinedData,
-      menuIsOpened,
-      setMenuIsOpened
+      refinedData
     }}>
       {children}
     </AppContext.Provider>
