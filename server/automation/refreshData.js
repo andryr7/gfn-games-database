@@ -1,13 +1,11 @@
-const { refreshGameData } = require('../datafetchers/gameDataFetcher');
-const refreshGameModesData = require('../datafetchers/gameModesDataFetcher');
-const refreshGameGenresData = require('../datafetchers/gameGenresDataFetcher');
-const appData = require('../datamanagers/appDataManager');
+import { refreshGameData } from "../datafetchers/gameDataFetcher.js";
+import { refreshGameModesData } from "../datafetchers/gameModesDataFetcher.js";
+import { refreshGameGenresData } from "../datafetchers/gameGenresDataFetcher.js";
+import { reloadData } from "../datamanagers/appDataManager.js";
 
-async function refreshData() {
+export async function refreshData() {
   await refreshGameData();
   await refreshGameGenresData();
   await refreshGameModesData();
-  await appData.reloadData();
+  await reloadData();
 }
-
-module.exports = refreshData;

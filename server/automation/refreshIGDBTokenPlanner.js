@@ -1,7 +1,8 @@
-const refreshIGDBToken = require('./refreshIGDBToken');
+import { refreshIGDBToken } from "./refreshIGDBToken.js";
 
 // Default token update interval
-const tokenRefreshInterval = (process.env.TOKEN_EXPIRATION - (24 * 60 * 60)) * 1000;
+const tokenRefreshInterval =
+  (process.env.TOKEN_EXPIRATION - 24 * 60 * 60) * 1000;
 
 function timeout(ms) {
   setTimeout(() => {
@@ -10,7 +11,7 @@ function timeout(ms) {
   }, ms);
 }
 
-async function programNextTokenRefresh() {
+export async function programNextTokenRefresh() {
   let timeRemaining = tokenRefreshInterval;
   const interval = 2147483647; // maximum time that can be set for setTimeout
   (function recursiveTimeout() {
@@ -19,7 +20,5 @@ async function programNextTokenRefresh() {
       timeRemaining -= interval;
       setTimeout(recursiveTimeout, Math.min(interval, timeRemaining));
     }
-  }());
+  })();
 }
-
-module.exports = programNextTokenRefresh;

@@ -1,8 +1,10 @@
-const puppeteer = require("puppeteer");
-const jsonfile = require("jsonfile");
-const axios = require("axios");
-const addDelay = require("../utils/addDelay");
-require("dotenv").config();
+import puppeteer from "puppeteer";
+import axios from "axios";
+import dotenv from 'dotenv';
+import { addDelay } from "../utils/addDelay.js";
+import { saveToFile } from "../datamanagers/appDataManager.js";
+
+dotenv.config();
 
 // Function that scraps all game titles and corresponding platforms from GFN website
 async function getGameTitles() {
@@ -18,9 +20,9 @@ async function getGameTitles() {
 }
 
 // Function that formats raw game strings array into objects
-function formatGameList(gameTitles) {
+function formatGameTitles(gameTitles) {
   console.log("Formating game data...");
-  const formatedGameData = gameTitles.map((game) => ({
+  const formattedGameData = gameTitles.map((game) => ({
     id: gameTitles.indexOf(game),
     name:
       game.indexOf("(") !== -1
@@ -34,11 +36,13 @@ function formatGameList(gameTitles) {
         ? game.substring(game.indexOf("(") + 1, game.length - 1).split(", ")
         : ["GFN App"],
   }));
-  return formatedGameData;
+  //TODO REMOVE
+  // console.log(formattedGameData);
+  return formattedGameData;
 }
 
 // Function that fetches data about a game from IGDB
-async function getMoreData(game, gameindex, gamecount) {
+async function getGameData(game, gameindex, gamecount) {
   // Creating the request
   const postData = `
     fields id, name, rating, aggregated_rating, game_modes, genres, cover, slug, first_release_date;
@@ -66,7 +70,7 @@ async function getMoreData(game, gameindex, gamecount) {
 }
 
 // Function that fetches cover URLs
-async function getCoverImageIds(game, gameindex, gameCount) {
+async function getGameCover(game, gameindex, gameCount) {
   if (game.IGDBdata === "no-data" || !game.IGDBdata.cover) return game;
 
   // Preparing the cover image request
@@ -93,36 +97,25 @@ async function getCoverImageIds(game, gameindex, gameCount) {
 // Function that organizes the fetching of data for all fetched games
 async function enrichGameData(gameData) {
   console.log("Fetching IGDB data...");
-  const igdbEnrichedGameData = await Promise.all(
-    gameData.map((game, i) => getMoreData(game, i, gameData.length))
+  const enrichedGameData = await Promise.all(
+    gameData.map((game, i) => getGameData(game, i, gameData.length))
   );
-  return Promise.all(
-    igdbEnrichedGameData.map((game, i) =>
-      getCoverImageIds(game, i, igdbEnrichedGameData.length)
-    )
-  );
+  return enrichedGameData;
 }
 
-// Function that saves all fetched data into a JSON file that will be served
-async function saveToFile(data) {
-  const file = "./tmp/gamedata.json";
-  await jsonfile
-    .writeFile(file, data)
-    .then(() => {
-      console.log("Finished saving formatted game data");
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+async function getCovers(gameData) {
+  console.log("Fetching game images...");
+  const gameDataWithImages = await Promise.all(
+    gameData.map((game, i) => getGameCover(game, i, gameData.length))
+  );
+  return gameDataWithImages;
 }
 
-async function refreshGameData() {
+export async function refreshGameData() {
   const gameTitles = await getGameTitles();
-  const formatedGameList = await formatGameList(gameTitles);
-  const APIEnrichedGameData = await enrichGameData(formatedGameList);
-  saveToFile(APIEnrichedGameData);
+  const formattedGameTitles = await formatGameTitles(gameTitles);
+  //TODO Compare game lists
+  const gameData = await enrichGameData(formattedGameTitles);
+  const gameDataWithCovers = await getCovers(gameData);
+  const savedGameData = await saveToFile("gamedata", gameDataWithCovers);
 }
-
-module.exports = {
-  refreshGameData,
-};

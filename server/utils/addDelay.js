@@ -1,9 +1,7 @@
-function addDelay (waitTime) {
-	return new Promise ((resolve) => {
-		setTimeout(() => {
-		resolve(true);
-		}, waitTime);
-	});
-};
-
-module.exports = addDelay;
+export function addDelay(waitTime) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, waitTime);
+  });
+}
