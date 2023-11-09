@@ -1,10 +1,8 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
-import dotenv from 'dotenv';
-import { addDelay } from "../utils/addDelay.js";
+import { addDelay } from "../utils/addDelay";
 import { saveToFile } from "../datamanagers/appDataManager.js";
-
-dotenv.config();
+import jsonfile from "jsonfile";
 
 // Function that scraps all game titles and corresponding platforms from GFN website
 async function getGameTitles() {
@@ -16,29 +14,49 @@ async function getGameTitles() {
     games.map((game) => game.textContent)
   );
   await browser.close();
-  return gameTitles;
+  return gameTitles.slice(0, 20);
 }
 
 // Function that formats raw game strings array into objects
 function formatGameTitles(gameTitles) {
-  console.log("Formating game data...");
-  const formattedGameData = gameTitles.map((game) => ({
-    id: gameTitles.indexOf(game),
-    name:
-      game.indexOf("(") !== -1
-        ? game
-            .substring(0, game.indexOf("(") - 1)
-            .replace("®", "")
-            .replace("™", "")
-        : game.replace("®", "").replace("™", ""),
-    platform:
-      game.indexOf("(") !== -1
-        ? game.substring(game.indexOf("(") + 1, game.length - 1).split(", ")
-        : ["GFN App"],
+  console.log("Formatting game data...");
+  
+  const cleanGameTitle = (title) => title.replace(/®|™/g, "").trim();
+
+  const formattedGameData = gameTitles.map((gameTitle, index) => ({
+    id: index,
+    name: gameTitle.includes("(") ? cleanGameTitle(gameTitle.substring(0, gameTitle.indexOf("(") - 1)) : cleanGameTitle(gameTitle),
+    platform: gameTitle.includes("(") ? gameTitle.substring(gameTitle.indexOf("(") + 1, gameTitle.length - 1).split(", ") : ["GFN App"],
   }));
-  //TODO REMOVE
-  // console.log(formattedGameData);
+
   return formattedGameData;
+}
+
+async function compareGameData(newGameTitles) {
+  let currentGameData = [];
+  let newGameData = [];
+
+  //Reading the existing game data file
+  await jsonfile.readFile("./tmp/gamedata.json")
+    .then(currentGameTitles => {
+      //Reading through each of the newly fetched game titles
+      for(const newGame of newGameTitles) {
+        if(currentGameTitles.some(currentGame => currentGame.name === newGame.name)) {
+        //If the newly fetched game is already present in the database, pass it on
+          currentGameData.push(currentGameTitles.find(game => game.name === newGame.name));
+        } else {
+        //If it's not, add it to the list of games that needs data
+          newGameData.push(newGame);
+        }
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      //If there was an error reading the data file = all game data must be enriched through the API
+      newGameData.push(...newGameTitles);
+    })
+
+  return [currentGameData, newGameData];
 }
 
 // Function that fetches data about a game from IGDB
@@ -114,8 +132,13 @@ async function getCovers(gameData) {
 export async function refreshGameData() {
   const gameTitles = await getGameTitles();
   const formattedGameTitles = await formatGameTitles(gameTitles);
-  //TODO Compare game lists
-  const gameData = await enrichGameData(formattedGameTitles);
-  const gameDataWithCovers = await getCovers(gameData);
-  const savedGameData = await saveToFile("gamedata", gameDataWithCovers);
+  const [ maintainedGames, newGamesToEnrich ] = await compareGameData(formattedGameTitles);
+  console.log(`${maintainedGames.length} games were already in the database`);
+  console.log(`${newGamesToEnrich.length} games are to be enriched with the IGDB API`);
+  const newGameData = await enrichGameData(newGamesToEnrich);
+  const newGameDataWithCovers = await getCovers(newGameData);
+  //Reuniting old existing data and newly fetched data
+  const aggregatedData = [...maintainedGames, ...newGameDataWithCovers];
+  //Storing the aggregated data
+  await saveToFile("gamedata", aggregatedData);
 }
