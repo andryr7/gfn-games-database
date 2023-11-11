@@ -4,6 +4,9 @@ import { saveToFile } from '../datamanagers/appDataManager.js';
 import jsonfile from 'jsonfile';
 import { axiosApiInstance } from '../api/axiosInstance.js';
 
+//TODO Implement retries
+//TODO Change delay mechanism to account for retries
+
 // Function that scraps all game titles and corresponding platforms from GFN website
 async function getGameTitles() {
   console.log('Fetching raw game titles...');
@@ -154,9 +157,7 @@ export async function refreshGameData() {
     formattedGameTitles
   );
   console.log(`${maintainedGames.length} games were already in the database`);
-  console.log(
-    `${newGamesToEnrich.length} games are to be enriched with the IGDB API`
-  );
+  console.log(`${newGamesToEnrich.length} games need IGDB data`);
   const newGameData = await enrichGameData(newGamesToEnrich);
   const newGameDataWithCovers = await getCovers(newGameData);
   //Reuniting old existing data and newly fetched data

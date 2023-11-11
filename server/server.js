@@ -4,6 +4,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { appData, reloadData } from './datamanagers/appDataManager.js';
 import { automateApp } from './automation/automateApp.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,4 +49,5 @@ app.get('*', (req, res) => {
 });
 
 // Server options
-app.listen(3000);
+app.listen(process.env.HOST_PORT);
+console.log(`App ready and listening on ${process.env.HOST_PORT}`);
