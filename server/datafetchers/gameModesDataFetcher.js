@@ -1,6 +1,6 @@
 import jsonfile from 'jsonfile';
-import axios from 'axios';
 import dotenv from 'dotenv';
+import { axiosApiInstance } from '../api/axiosInstance.js';
 
 dotenv.config();
 
@@ -10,21 +10,21 @@ async function fetchGameModesData() {
     fields *; limit 100;
   `;
 
-  return axios
-    .post("https://api.igdb.com/v4/game_modes", postData)
+  return axiosApiInstance
+    .post('https://api.igdb.com/v4/game_modes', postData)
     .then((res) => res.data)
     .catch((err) => {
-      console.error("AXIOS ERROR: ", err);
+      console.error('AXIOS ERROR: ', err);
     });
 }
 
 // Function that saves all fetched data into a JSON file that will be served
 async function saveToFile(data) {
-  const file = "./tmp/gamemodesdata.json";
+  const file = './tmp/gamemodesdata.json';
   await jsonfile
     .writeFile(file, data)
     .then(() => {
-      console.log("Finished saving game modes data");
+      console.log('Finished saving game modes data');
     })
     .catch((err) => {
       console.error(err);
