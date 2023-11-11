@@ -3,7 +3,7 @@ import axios from "axios";
 import cors from "cors";
 import { fileURLToPath } from 'url';
 import path from "path";
-import { getData, reloadData } from "./datamanagers/appDataManager.js";
+import { appData, reloadData } from "./datamanagers/appDataManager.js";
 import { automateApp } from "./automation/automateApp.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,15 +33,15 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 app.use(cors());
 
 app.get("/api/games", (req, res) => {
-  res.json(getData("gamedata"));
+  res.json(appData.getData("gamedata"));
 });
 
 app.get("/api/gamemodes", (req, res) => {
-  res.json(getData("gamemodedata"));
+  res.json(appData.getData("gamemodedata"));
 });
 
 app.get("/api/genres", (req, res) => {
-  res.json(getData("genredata"));
+  res.json(appData.getData("genredata"));
 });
 
 // Redirecting all remaining possible requests to the front-end app

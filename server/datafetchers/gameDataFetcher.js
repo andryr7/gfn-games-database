@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
-import { addDelay } from "../utils/addDelay";
+import { addDelay } from "../utils/addDelay.js";
 import { saveToFile } from "../datamanagers/appDataManager.js";
 import jsonfile from "jsonfile";
 
@@ -15,6 +15,8 @@ async function getGameTitles() {
   );
   await browser.close();
   return gameTitles.slice(0, 20);
+  //TODO Uncomment 
+  // return gameTitles;
 }
 
 // Function that formats raw game strings array into objects

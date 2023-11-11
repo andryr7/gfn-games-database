@@ -1,14 +1,20 @@
 import jsonfile from "jsonfile";
 
-const appData = {};
+class AppData {
+  constructor() {
+    this.data = {};
+  }
 
-export function setData(key, value) {
-  appData[key] = value;
+  setData(key, value) {
+    this.data[key] = value;
+  }
+
+  getData(key) {
+    return this.data[key];
+  }
 }
 
-export function getData(key) {
-  return appData[key];
-}
+export const appData = new AppData;
 
 // Function that saves all fetched data into a JSON file that will be served
 export async function saveToFile(fileName, data) {
@@ -28,7 +34,7 @@ export async function reloadData() {
   jsonfile
     .readFile("./tmp/gamedata.json")
     .then((obj) => {
-      setData("gamedata", obj);
+      appData.setData("gamedata", obj);
       console.log("Reloaded game data");
     })
     .catch((err) => {
@@ -37,7 +43,7 @@ export async function reloadData() {
   jsonfile
     .readFile("./tmp/gamemodesdata.json")
     .then((obj) => {
-      setData("gamemodedata", obj);
+      appData.setData("gamemodedata", obj);
       console.log("Reloaded gamemodes data");
     })
     .catch((err) => {
@@ -46,7 +52,7 @@ export async function reloadData() {
   jsonfile
     .readFile("./tmp/gamegenresdata.json")
     .then((obj) => {
-      setData("genredata", obj);
+      appData.setData("genredata", obj);
       console.log("Reloaded gamegenres data");
     })
     .catch((err) => {
