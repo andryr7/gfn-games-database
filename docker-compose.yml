@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    build: .
+    environment:
+    - DISPLAY=:99
+    - NODE_ENV=production
+    ports: 
+      - 3000:3000
+      - 9229:9229
+    volumes:
+      - data:/app/server/tmp
+    command: Xvfb :99 -screen 0 1024x768x16
+volumes:
+  data:

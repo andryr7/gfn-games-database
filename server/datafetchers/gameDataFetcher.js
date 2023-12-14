@@ -21,7 +21,7 @@ async function getGameTitles() {
   );
   await browser.close();
   //Uncomment to restrict length for testing
-  // return gameTitles.slice(0, 30);
+  // return gameTitles.slice(0, 10);
   return gameTitles;
 }
 
@@ -164,11 +164,13 @@ export async function refreshGameData() {
   const newGameData = await enrichGameData(newGameDataToEnrich);
   const newGameDataWithCovers = await getCovers(newGameData);
 
-  //Storing the aggregated data
-  await saveToFile('gamedata', [
+  const aggregatedGameData = [
     ...filteredCurrentGameData,
     ...newGameDataWithCovers,
-  ]);
+  ];
+
+  //Storing the aggregated data
+  await saveToFile('gamedata', aggregatedGameData);
 
   console.log(`${currentGameData.length} games were present in the database`);
   console.log(
