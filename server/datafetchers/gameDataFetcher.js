@@ -10,7 +10,10 @@ import { axiosApiInstance } from '../api/axiosInstance.js';
 // Function that scraps all game titles and corresponding platforms from GFN website
 async function getGameTitles() {
   console.log('Fetching raw game titles...');
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   const page = await browser.newPage();
   await page.goto('https://www.nvidia.com/en-us/geforce-now/games/');
   const gameTitles = await page.$$eval('.div-game-name', (games) =>
@@ -18,7 +21,7 @@ async function getGameTitles() {
   );
   await browser.close();
   //Uncomment to restrict length for testing
-  // return gameTitles.slice(0, 20);
+  // return gameTitles.slice(0, 30);
   return gameTitles;
 }
 
@@ -43,39 +46,30 @@ function formatGameTitles(gameTitles) {
   return formattedGameData;
 }
 
-//Function that splits game titles into two lists, one with already existing data and new ones
-async function compareGameData(newGameTitles) {
-  let currentGameData = [];
-  let newGameData = [];
-
-  //Reading the existing game data file
-  await jsonfile
-    .readFile('./tmp/gamedata.json')
-    .then((currentGameTitles) => {
-      //Reading through each of the newly fetched game titles
-      for (const newGame of newGameTitles) {
-        if (
-          currentGameTitles.some(
-            (currentGame) => currentGame.name === newGame.name
-          )
-        ) {
-          //If the newly fetched game is already present in the database, pass it on
-          currentGameData.push(
-            currentGameTitles.find((game) => game.name === newGame.name)
-          );
-        } else {
-          //If it's not, add it to the list of games that needs data
-          newGameData.push(newGame);
-        }
-      }
-    })
-    .catch((err) => {
+//Function that reads the current game data
+async function loadCurrentGameData() {
+  return await jsonfile.readFile('./tmp/gamedata.json').catch((err) => {
+    if (err.code === 'ENOENT') {
+      console.log('No data file was found');
+    } else {
       console.log(err);
-      //If there was an error reading the data file = all game data must be enriched through the API
-      newGameData.push(...newGameTitles);
-    });
+    }
+    return [];
+  });
+}
 
-  return [currentGameData, newGameData];
+//Filtering game data to remove unpublished games and only enrich new games
+async function filterGameData(formattedGameTitles, currentGameData) {
+  const filteredGameData = currentGameData.filter((currentGame) =>
+    formattedGameTitles.some((newGame) => newGame.name === currentGame.name)
+  );
+
+  const newGameData = formattedGameTitles.filter(
+    (newGame) =>
+      !currentGameData.some((currentGame) => currentGame.name === newGame.name)
+  );
+
+  return [filteredGameData, newGameData];
 }
 
 // Function that fetches data about a game from IGDB
@@ -151,17 +145,43 @@ async function getCovers(gameData) {
 
 //Function that orchestrates all data gathering and storing
 export async function refreshGameData() {
-  const gameTitles = await getGameTitles();
-  const formattedGameTitles = await formatGameTitles(gameTitles);
-  const [maintainedGames, newGamesToEnrich] = await compareGameData(
-    formattedGameTitles
+  //Scrapping game titles
+  const scrappedGameTitles = await getGameTitles();
+
+  //Formatting game titles
+  const formattedGameTitles = await formatGameTitles(scrappedGameTitles);
+
+  //Loading the current game data
+  const currentGameData = await loadCurrentGameData();
+
+  //Removing deleted games from the database
+  const [filteredCurrentGameData, newGameDataToEnrich] = await filterGameData(
+    formattedGameTitles,
+    currentGameData
   );
-  console.log(`${maintainedGames.length} games were already in the database`);
-  console.log(`${newGamesToEnrich.length} games need IGDB data`);
-  const newGameData = await enrichGameData(newGamesToEnrich);
+
+  //Enriching the game data using IGDB API
+  const newGameData = await enrichGameData(newGameDataToEnrich);
   const newGameDataWithCovers = await getCovers(newGameData);
-  //Reuniting old existing data and newly fetched data
-  const aggregatedData = [...maintainedGames, ...newGameDataWithCovers];
+
   //Storing the aggregated data
-  await saveToFile('gamedata', aggregatedData);
+  await saveToFile('gamedata', [
+    ...filteredCurrentGameData,
+    ...newGameDataWithCovers,
+  ]);
+
+  console.log(`${currentGameData.length} games were present in the database`);
+  console.log(
+    `${
+      currentGameData.length - filteredCurrentGameData.length
+    } games were removed from the database`
+  );
+  console.log(
+    `${newGameDataWithCovers.length} games were added to the database`
+  );
+  console.log(
+    `${
+      filteredCurrentGameData.length + newGameDataWithCovers.length
+    } are now present in the database`
+  );
 }
