@@ -1,7 +1,7 @@
-import { refreshData } from "./refreshData.js";
+import { refreshData } from './refreshData.js';
 
 // Program the next data refresh on next thursday a 9 am (time of GFN games availability release)
-export async function programDataRefresh() {
+export async function programNextDataRefresh() {
   const now = new Date();
   const nextRefreshTime = new Date(
     now.getFullYear(),

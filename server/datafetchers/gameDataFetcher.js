@@ -20,8 +20,6 @@ async function getGameTitles() {
     games.map((game) => game.textContent)
   );
   await browser.close();
-  //Uncomment to restrict length for testing
-  // return gameTitles.slice(0, 10);
   return gameTitles;
 }
 

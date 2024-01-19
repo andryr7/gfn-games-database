@@ -5,46 +5,35 @@ import { fileURLToPath } from 'url';
 import { appData, reloadData } from './datamanagers/appDataManager.js';
 import { automateApp } from './automation/automateApp.js';
 import dotenv from 'dotenv';
-import { refreshMetaData } from './automation/refreshMetaData.js';
-
-dotenv.config();
+import { checkEnvVariables } from './utils/checkEnvVariables.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+dotenv.config();
 const app = express();
 
-// Enabling automation if necessary
-switch (process.env.AUTOMATE_APP) {
-  case 'true':
-    automateApp();
-    break;
-  case 'false':
-    reloadData();
-    refreshMetaData();
-    break;
-  default:
-    console.log('Error: automation env variable was not properly set');
-}
+//Checking env variables
+checkEnvVariables();
+
+// Loading data and launching automation process
+reloadData();
+process.env.AUTOMATE_APP === 'true' && automateApp();
 
 // Serving the front-end app
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+process && app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 // API Routes
 app.use(cors());
-
 app.get('/api/games', (req, res) => {
   res.json(appData.getData('gamedata'));
 });
-
 app.get('/api/gamemodes', (req, res) => {
   res.json(appData.getData('gamemodedata'));
 });
-
 app.get('/api/genres', (req, res) => {
   res.json(appData.getData('genredata'));
 });
-
 app.get('/api/metadata', (req, res) => {
   res.json(appData.getData('metadata'));
 });
