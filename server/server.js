@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { appData, reloadData } from './datamanagers/appDataManager.js';
 import { automateApp } from './automation/automateApp.js';
 import dotenv from 'dotenv';
+import { refreshMetaData } from './automation/refreshMetaData.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ switch (process.env.AUTOMATE_APP) {
     break;
   case 'false':
     reloadData();
+    refreshMetaData();
     break;
   default:
     console.log('Error: automation env variable was not properly set');
@@ -41,6 +43,10 @@ app.get('/api/gamemodes', (req, res) => {
 
 app.get('/api/genres', (req, res) => {
   res.json(appData.getData('genredata'));
+});
+
+app.get('/api/metadata', (req, res) => {
+  res.json(appData.getData('metadata'));
 });
 
 // Redirecting all remaining possible requests to the front-end app
