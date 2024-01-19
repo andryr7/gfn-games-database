@@ -1,14 +1,14 @@
-import styled from "styled-components"
-import { colors } from "../styles/stylevars"
-import LogoBlock from "./SideBar/LogoBlock"
-import ViewBlock from './SideBar/ViewBlock'
-import SearchBlock from "./SideBar/SearchBlock"
-import SortBlock from "./SideBar/SortBlock"
-import GenreFilterBlock from './SideBar/GenreFilterBlock'
-import GamemodeFilterBlock from "./SideBar/GamemodeFilterBlock"
-import GameCount from "./SideBar/GameCount"
-import About from "./SideBar/About"
-import FilterReseter from "./SideBar/FilterReseter"
+import styled from "styled-components";
+import { colors } from "../styles/stylevars";
+import LogoBlock from "./SideBar/LogoBlock";
+import ViewBlock from "./SideBar/ViewBlock";
+import SearchBlock from "./SideBar/SearchBlock";
+import SortBlock from "./SideBar/SortBlock";
+import GenreFilterBlock from "./SideBar/GenreFilterBlock";
+import GamemodeFilterBlock from "./SideBar/GamemodeFilterBlock";
+import About from "./SideBar/About";
+import FilterReseter from "./SideBar/FilterReseter";
+import GameDataInfo from "./SideBar/GameDataInfo";
 
 const StyledSideBarContainer = styled.div`
   position: sticky;
@@ -24,7 +24,7 @@ const StyledSideBarContainer = styled.div`
   box-sizing: border-box;
   background-color: ${colors.black};
   overflow-y: auto;
-`
+`;
 
 export default function DesktopSideBar() {
   return (
@@ -36,8 +36,8 @@ export default function DesktopSideBar() {
       <GenreFilterBlock />
       <GamemodeFilterBlock />
       <FilterReseter />
-      <GameCount />
+      <GameDataInfo />
       <About />
     </StyledSideBarContainer>
-  )
+  );
 }

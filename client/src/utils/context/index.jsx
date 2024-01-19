@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
   const [gameData, setGameData] = useState([]);
   const [genreData, setGenreData] = useState([]);
   const [gamemodeData, setGamemodeData] = useState([]);
+  const [metaData, setMetaData] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([0]);
   const [selectedGamemodes, setSelectedGamemodes] = useState([0]);
   const [displayedGamesCount, setDisplayedGamesCount] = useState(20);
@@ -35,17 +36,20 @@ export const AppProvider = ({ children }) => {
       }
 
       try {
-        const [gameData, genreData, modeData] = await Promise.all([
-          axios.get("/api/games"),
-          axios.get("/api/genres"),
-          axios.get("/api/gamemodes"),
-          // axios.get('http://localhost:3000/api/games'),
-          // axios.get('http://localhost:3000/api/genres'),
-          // axios.get('http://localhost:3000/api/gamemodes')
+        const [gameData, genreData, modeData, metaData] = await Promise.all([
+          // axios.get("/api/games"),
+          // axios.get("/api/genres"),
+          // axios.get("/api/gamemodes"),
+          // axios.get("/api/metadata"),
+          axios.get("http://localhost:3000/api/games"),
+          axios.get("http://localhost:3000/api/genres"),
+          axios.get("http://localhost:3000/api/gamemodes"),
+          axios.get("http://localhost:3000/api/metadata"),
         ]);
         setGameData(gameData.data);
         setGenreData(genreData.data);
         setGamemodeData(modeData.data);
+        setMetaData(metaData.data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -70,6 +74,7 @@ export const AppProvider = ({ children }) => {
         gameData,
         genreData,
         gamemodeData,
+        metaData,
         displayMode,
         setDisplayMode,
         searchInput,

@@ -1,15 +1,15 @@
-import styled from "styled-components"
-import { colors, device } from "../styles/stylevars"
-import LogoBlock from "./SideBar/LogoBlock"
-import ViewBlock from './SideBar/ViewBlock'
-import SearchBlock from "./SideBar/SearchBlock"
-import SortBlock from "./SideBar/SortBlock"
-import GenreFilterBlock from './SideBar/GenreFilterBlock'
-import GamemodeFilterBlock from "./SideBar/GamemodeFilterBlock"
-import GameCount from "./SideBar/GameCount"
-import About from "./SideBar/About"
-import FilterReseter from "./SideBar/FilterReseter"
-import { useState } from "react"
+import styled from "styled-components";
+import { colors, device } from "../styles/stylevars";
+import LogoBlock from "./SideBar/LogoBlock";
+import ViewBlock from "./SideBar/ViewBlock";
+import SearchBlock from "./SideBar/SearchBlock";
+import SortBlock from "./SideBar/SortBlock";
+import GenreFilterBlock from "./SideBar/GenreFilterBlock";
+import GamemodeFilterBlock from "./SideBar/GamemodeFilterBlock";
+import About from "./SideBar/About";
+import FilterReseter from "./SideBar/FilterReseter";
+import { useState } from "react";
+import GameDataInfo from "./SideBar/GameDataInfo";
 
 const StyledSideBarContainer = styled.div`
   position: fixed;
@@ -25,14 +25,17 @@ const StyledSideBarContainer = styled.div`
   box-sizing: border-box;
   background-color: ${colors.black};
   overflow-y: scroll;
-`
+`;
 
 export default function MobileSideBar() {
   const [menuIsOpened, setMenuIsOpened] = useState(false);
 
   return (
     <StyledSideBarContainer>
-      <LogoBlock menuIsOpened={menuIsOpened} setMenuIsOpened={setMenuIsOpened}/>
+      <LogoBlock
+        menuIsOpened={menuIsOpened}
+        setMenuIsOpened={setMenuIsOpened}
+      />
       {menuIsOpened && (
         <>
           <ViewBlock />
@@ -41,10 +44,10 @@ export default function MobileSideBar() {
           <GenreFilterBlock />
           <GamemodeFilterBlock />
           <FilterReseter />
-          <GameCount />
+          <GameDataInfo />
           <About />
         </>
       )}
     </StyledSideBarContainer>
-  )
+  );
 }
